@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Factory Machine Automation / फैक्ट्री मशीन ऑटोमेशन</title>
+<style>
+  :root{
+    --blue-900:#042C53; --blue-800:#0C447C; --blue-600:#185FA5; --blue-400:#378ADD;
+    --blue-200:#85B7EB; --blue-100:#B5D4F4; --blue-50:#E6F1FB;
+    --bg:#EAF3FC; --card:#FFFFFF; --text:#0C2233; --muted:#5A7891; --danger:#C0392B; --ok:#1D9E75;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);}
+  .topbar{background:var(--blue-900);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .topbar h1{font-size:18px;margin:0;font-weight:600;}
+  .topbar h1 span{display:block;font-size:12px;font-weight:400;color:var(--blue-100);}
+  .tabs{display:flex;gap:8px;}
+  .tabs button{background:var(--blue-800);color:#fff;border:1px solid var(--blue-400);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:14px;}
+  .tabs button.active{background:var(--blue-400);}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px;}
+  .phone-frame{max-width:380px;margin:0 auto;background:var(--blue-900);border-radius:34px;padding:14px;box-shadow:0 6px 18px rgba(4,44,83,.25);}
+  .phone-screen{background:var(--bg);border-radius:22px;overflow:hidden;min-height:640px;}
+  .app-header{background:var(--blue-600);color:#fff;padding:16px;text-align:center;}
+  .app-header h2{margin:0;font-size:16px;}
+  .app-header span{font-size:12px;color:var(--blue-50);}
+  .app-body{padding:14px;}
+  .section-card{background:var(--card);border:1px solid var(--blue-100);border-radius:12px;padding:14px;margin-bottom:14px;}
+  .section-card h3{margin:0 0 10px;font-size:14px;color:var(--blue-800);border-bottom:2px solid var(--blue-50);padding-bottom:6px;}
+  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px;}
+  label b{color:var(--text);}
+  input,select,textarea{width:100%;padding:9px;border:1px solid var(--blue-200);border-radius:8px;font-size:14px;background:#fff;color:var(--text);}
+  textarea{resize:vertical;min-height:50px;}
+  .file-btn{display:flex;align-items:center;gap:10px;}
+  .file-btn input[type=file]{padding:6px;}
+  .thumb{width:44px;height:44px;border-radius:6px;object-fit:cover;border:1px solid var(--blue-200);}
+  .loc-box{background:var(--blue-50);border:1px solid var(--blue-200);border-radius:8px;padding:8px;font-size:12px;color:var(--blue-800);margin-top:8px;}
+  .submit-btn{width:100%;background:var(--blue-600);color:#fff;border:none;padding:13px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:6px;}
+  .submit-btn:active{background:var(--blue-800);}
+  .msg{padding:10px;border-radius:8px;font-size:13px;margin-bottom:10px;text-align:center;}
+  .msg.ok{background:#E1F5EE;color:var(--ok);border:1px solid #9FE1CB;}
+  .msg.err{background:#FCEBEB;color:var(--danger);border:1px solid #F0999;}
+  /* dashboard */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
+  .stat-card{background:var(--card);border:1px solid var(--blue-100);border-radius:12px;padding:14px;}
+  .stat-card .num{font-size:26px;font-weight:700;color:var(--blue-800);}
+  .stat-card .lbl{font-size:12px;color:var(--muted);}
+  .filter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+  .filter-row button{background:#fff;border:1px solid var(--blue-200);color:var(--blue-800);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;}
+  .filter-row button.active{background:var(--blue-600);color:#fff;border-color:var(--blue-600);}
+  .filter-row select,.filter-row input{width:auto;padding:8px;}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:13px;}
+  thead{background:var(--blue-800);color:#fff;}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--blue-50);}
+  tbody tr:hover{background:var(--blue-50);}
+  .badge{padding:2px 8px;border-radius:20px;font-size:11px;background:var(--blue-100);color:var(--blue-800);}
+  .thumb-link img{width:36px;height:36px;object-fit:cover;border-radius:5px;border:1px solid var(--blue-200);cursor:pointer;}
+  .empty{text-align:center;padding:40px;color:var(--muted);}
+  .table-wrap{overflow-x:auto;border-radius:12px;}
+  a.loc-link{color:var(--blue-600);font-weight:600;text-decoration:none;}
+  footer{text-align:center;font-size:12px;color:var(--muted);padding:20px;}
+  .modal-bg{position:fixed;inset:0;background:rgba(4,44,83,.55);display:flex;align-items:center;justify-content:center;z-index:50;}
+  .modal{background:#fff;border-radius:12px;padding:16px;max-width:90vw;max-height:90vh;overflow:auto;}
+  .modal img{max-width:80vw;max-height:70vh;border-radius:8px;}
+  .modal button{margin-top:10px;background:var(--blue-800);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Factory Machine Automation - Admin<span>फैक्ट्री मशीन ऑटोमेशन — एडमिन डैशबोर्ड</span></h1>
+</div>
+
+<div class="wrap">
+
+  <!-- ADMIN DASHBOARD VIEW -->
+  <div id="adminView">
+    <div class="stats" id="statsRow"></div>
+
+    <div class="filter-row">
+      <button data-range="today" class="active">Today / आज</button>
+      <button data-range="week">This Week / इस हफ्ते</button>
+      <button data-range="month">This Month / इस महीने</button>
+      <button data-range="all">All / सभी</button>
+      <select id="machineFilter"><option value="">All Machines / सभी मशीन</option></select>
+      <button id="refreshBtn">🔄 Refresh / रिफ्रेश</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date/Time<br><span style="font-weight:400">दिनांक/समय</span></th>
+            <th>Operator<br><span style="font-weight:400">ऑपरेटर</span></th>
+            <th>Machine<br><span style="font-weight:400">मशीन</span></th>
+            <th>Start<br><span style="font-weight:400">शुरू</span></th>
+            <th>End<br><span style="font-weight:400">समाप्ति</span></th>
+            <th>Remark<br><span style="font-weight:400">टिप्पणी</span></th>
+            <th>Photos<br><span style="font-weight:400">फोटो</span></th>
+            <th>Location<br><span style="font-weight:400">लोकेशन</span></th>
+          </tr>
+        </thead>
+        <tbody id="entriesBody"></tbody>
+      </table>
+    </div>
+    <div id="emptyMsg" class="empty" style="display:none">No entries found for this filter. / इस फ़िल्टर के लिए कोई एंट्री नहीं मिली।</div>
+  </div>
+
+</div>
+
+<footer>Prototype demo — data stored in this app's shared storage. / यह एक डेमो प्रोटोटाइप है।</footer>
+
+<div id="imgModal" style="display:none"></div>
+
+<script>
+// ===================================================================
+// STEP: तुमचा Google Apps Script "Web app URL" इथे टाका (Code.gs deploy केल्यावर मिळतो)
+// PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW:
+// ===================================================================
+const SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+const machFilter = document.getElementById('machineFilter');
+for(let i=1;i<=37;i++){
+  const o2=document.createElement('option'); o2.value=i; o2.textContent='Machine '+i; machFilter.appendChild(o2);
+}
+
+loadEntries();
+
+let allEntries = [];
+let currentRange = 'today';
+
+document.querySelectorAll('.filter-row button[data-range]').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('.filter-row button[data-range]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentRange = btn.dataset.range;
+    renderTable();
+  };
+});
+document.getElementById('machineFilter').onchange = renderTable;
+document.getElementById('refreshBtn').onclick = loadEntries;
+
+async function loadEntries(){
+  try{
+    const res = await fetch(SCRIPT_URL + '?action=list');
+    const entries = await res.json();
+    entries.sort((a,b)=>b.timestamp-a.timestamp);
+    allEntries = entries;
+    renderTable();
+  }catch(e){
+    console.error(e);
+    allEntries = [];
+    renderTable();
+  }
+}
+
+function inRange(ts){
+  const now = new Date();
+  const d = new Date(ts);
+  if(currentRange==='today'){
+    return d.toDateString()===now.toDateString();
+  }
+  if(currentRange==='week'){
+    const weekAgo = new Date(now); weekAgo.setDate(now.getDate()-7);
+    return d>=weekAgo;
+  }
+  if(currentRange==='month'){
+    return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+  }
+  return true;
+}
+
+function durationHrs(start,end){
+  if(!start || !end) return 0;
+  const [sh,sm]=start.split(':').map(Number);
+  const [eh,em]=end.split(':').map(Number);
+  let mins = (eh*60+em)-(sh*60+sm);
+  if(mins<0) mins+=24*60;
+  return mins/60;
+}
+
+function renderTable(){
+  const machVal = document.getElementById('machineFilter').value;
+  let filtered = allEntries.filter(e=>inRange(e.timestamp));
+  if(machVal) filtered = filtered.filter(e=>String(e.machNo)===machVal);
+
+  const tbody = document.getElementById('entriesBody');
+  tbody.innerHTML = '';
+  document.getElementById('emptyMsg').style.display = filtered.length ? 'none':'block';
+
+  filtered.forEach(e=>{
+    const tr = document.createElement('tr');
+    const photos = [];
+    if(e.readingMorning) photos.push(imgThumb(e.readingMorning,'Morning Reading'));
+    if(e.readingEvening) photos.push(imgThumb(e.readingEvening,'Evening Reading'));
+    if(e.challanPhoto) photos.push(imgThumb(e.challanPhoto,'Challan'));
+    const locHtml = e.location ? `<a class="loc-link" href="https://maps.google.com/?q=${e.location.lat},${e.location.lng}" target="_blank">View Map</a>` : '<span style="color:var(--muted)">—</span>';
+
+    tr.innerHTML = `
+      <td>${e.dateStr}</td>
+      <td>${escapeHtml(e.opName)}</td>
+      <td><span class="badge">M-${e.machNo}</span></td>
+      <td>${e.startTime||'—'}</td>
+      <td>${e.endTime||'—'}</td>
+      <td>${escapeHtml(e.remark)||'—'}</td>
+      <td><div style="display:flex;gap:4px;">${photos.join('') || '—'}</div></td>
+      <td>${locHtml}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  renderStats(filtered);
+}
+
+function imgThumb(src, label){
+  return `<span class="thumb-link"><img src="${src}" onclick="showImg('${src.replace(/'/g,"")}','${label}')"></span>`;
+}
+function showImg(src,label){
+  const m = document.getElementById('imgModal');
+  m.innerHTML = `<div class="modal-bg" onclick="closeModal(event)"><div class="modal" onclick="event.stopPropagation()">
+    <p style="margin:0 0 8px;font-weight:600;color:var(--blue-800)">${label}</p>
+    <img src="${src}"><br><button onclick="closeModal()">Close / बंद करें</button>
+  </div></div>`;
+  m.style.display='block';
+}
+function closeModal(e){ document.getElementById('imgModal').style.display='none'; document.getElementById('imgModal').innerHTML=''; }
+
+function escapeHtml(s){
+  if(!s) return '';
+  return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderStats(filtered){
+  const totalEntries = filtered.length;
+  const machinesUsed = new Set(filtered.map(e=>e.machNo)).size;
+  const operators = new Set(filtered.map(e=>e.opName)).size;
+  const totalHrs = filtered.reduce((s,e)=>s+durationHrs(e.startTime,e.endTime),0);
+
+  const stats = [
+    {num: totalEntries, lbl:'Total Entries / कुल एंट्री'},
+    {num: machinesUsed, lbl:'Machines Active / सक्रिय मशीन'},
+    {num: operators, lbl:'Operators / ऑपरेटर'},
+    {num: totalHrs.toFixed(1)+' hrs', lbl:'Total Run Hours / कुल कार्य घंटे'}
+  ];
+  document.getElementById('statsRow').innerHTML = stats.map(s=>`
+    <div class="stat-card"><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>
+  `).join('');
+}
+</script>
+</body>
+</html>
