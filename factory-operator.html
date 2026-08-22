@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Factory Machine Automation / फैक्ट्री मशीन ऑटोमेशन</title>
+<style>
+  :root{
+    --blue-900:#042C53; --blue-800:#0C447C; --blue-600:#185FA5; --blue-400:#378ADD;
+    --blue-200:#85B7EB; --blue-100:#B5D4F4; --blue-50:#E6F1FB;
+    --bg:#EAF3FC; --card:#FFFFFF; --text:#0C2233; --muted:#5A7891; --danger:#C0392B; --ok:#1D9E75;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);}
+  .topbar{background:var(--blue-900);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .topbar h1{font-size:18px;margin:0;font-weight:600;}
+  .topbar h1 span{display:block;font-size:12px;font-weight:400;color:var(--blue-100);}
+  .tabs{display:flex;gap:8px;}
+  .tabs button{background:var(--blue-800);color:#fff;border:1px solid var(--blue-400);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:14px;}
+  .tabs button.active{background:var(--blue-400);}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px;}
+  .phone-frame{max-width:380px;margin:0 auto;background:var(--blue-900);border-radius:34px;padding:14px;box-shadow:0 6px 18px rgba(4,44,83,.25);}
+  .phone-screen{background:var(--bg);border-radius:22px;overflow:hidden;min-height:640px;}
+  .app-header{background:var(--blue-600);color:#fff;padding:16px;text-align:center;}
+  .app-header h2{margin:0;font-size:16px;}
+  .app-header span{font-size:12px;color:var(--blue-50);}
+  .app-body{padding:14px;}
+  .section-card{background:var(--card);border:1px solid var(--blue-100);border-radius:12px;padding:14px;margin-bottom:14px;}
+  .section-card h3{margin:0 0 10px;font-size:14px;color:var(--blue-800);border-bottom:2px solid var(--blue-50);padding-bottom:6px;}
+  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px;}
+  label b{color:var(--text);}
+  input,select,textarea{width:100%;padding:9px;border:1px solid var(--blue-200);border-radius:8px;font-size:14px;background:#fff;color:var(--text);}
+  textarea{resize:vertical;min-height:50px;}
+  .file-btn{display:flex;align-items:center;gap:10px;}
+  .file-btn input[type=file]{padding:6px;}
+  .thumb{width:44px;height:44px;border-radius:6px;object-fit:cover;border:1px solid var(--blue-200);}
+  .loc-box{background:var(--blue-50);border:1px solid var(--blue-200);border-radius:8px;padding:8px;font-size:12px;color:var(--blue-800);margin-top:8px;}
+  .submit-btn{width:100%;background:var(--blue-600);color:#fff;border:none;padding:13px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:6px;}
+  .submit-btn:active{background:var(--blue-800);}
+  .msg{padding:10px;border-radius:8px;font-size:13px;margin-bottom:10px;text-align:center;}
+  .msg.ok{background:#E1F5EE;color:var(--ok);border:1px solid #9FE1CB;}
+  .msg.err{background:#FCEBEB;color:var(--danger);border:1px solid #F0999;}
+  /* dashboard */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
+  .stat-card{background:var(--card);border:1px solid var(--blue-100);border-radius:12px;padding:14px;}
+  .stat-card .num{font-size:26px;font-weight:700;color:var(--blue-800);}
+  .stat-card .lbl{font-size:12px;color:var(--muted);}
+  .filter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+  .filter-row button{background:#fff;border:1px solid var(--blue-200);color:var(--blue-800);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;}
+  .filter-row button.active{background:var(--blue-600);color:#fff;border-color:var(--blue-600);}
+  .filter-row select,.filter-row input{width:auto;padding:8px;}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:13px;}
+  thead{background:var(--blue-800);color:#fff;}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--blue-50);}
+  tbody tr:hover{background:var(--blue-50);}
+  .badge{padding:2px 8px;border-radius:20px;font-size:11px;background:var(--blue-100);color:var(--blue-800);}
+  .thumb-link img{width:36px;height:36px;object-fit:cover;border-radius:5px;border:1px solid var(--blue-200);cursor:pointer;}
+  .empty{text-align:center;padding:40px;color:var(--muted);}
+  .table-wrap{overflow-x:auto;border-radius:12px;}
+  a.loc-link{color:var(--blue-600);font-weight:600;text-decoration:none;}
+  footer{text-align:center;font-size:12px;color:var(--muted);padding:20px;}
+  .modal-bg{position:fixed;inset:0;background:rgba(4,44,83,.55);display:flex;align-items:center;justify-content:center;z-index:50;}
+  .modal{background:#fff;border-radius:12px;padding:16px;max-width:90vw;max-height:90vh;overflow:auto;}
+  .modal img{max-width:80vw;max-height:70vh;border-radius:8px;}
+  .modal button{margin-top:10px;background:var(--blue-800);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Factory Machine Automation Tool<span>फैक्ट्री मशीन ऑटोमेशन टूल — 37 Machines</span></h1>
+</div>
+
+<div class="wrap">
+
+  <!-- OPERATOR APP VIEW -->
+  <div id="operatorView">
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="app-header">
+          <h2>Machine Log Entry</h2>
+          <span>मशीन लॉग एंट्री</span>
+        </div>
+        <div class="app-body">
+          <div id="formMsg"></div>
+
+          <div class="section-card">
+            <h3>1. Entry Details / एंट्री विवरण</h3>
+            <label><b>Operator Name</b> / ऑपरेटर का नाम</label>
+            <input type="text" id="opName" placeholder="e.g. Ramesh Patil">
+
+            <label><b>Machine No.</b> / मशीन नंबर</label>
+            <select id="machNo"></select>
+
+            <label><b>Start Time</b> / शुरू होने का समय</label>
+            <input type="time" id="startTime">
+
+            <label><b>End Time</b> / समाप्ति समय</label>
+            <input type="time" id="endTime">
+
+            <label><b>Remark</b> / टिप्पणी</label>
+            <textarea id="remark" placeholder="Any issue or note..."></textarea>
+          </div>
+
+          <div class="section-card">
+            <h3>2. Reading Photo / रीडिंग फोटो</h3>
+            <label><b>Morning Reading Photo</b> / सुबह की रीडिंग फोटो</label>
+            <div class="file-btn"><input type="file" accept="image/*" capture="environment" id="readMorning"><img id="thumbMorning" class="thumb" style="display:none"></div>
+
+            <label><b>Evening Reading Photo</b> / शाम की रीडिंग फोटो</label>
+            <div class="file-btn"><input type="file" accept="image/*" capture="environment" id="readEvening"><img id="thumbEvening" class="thumb" style="display:none"></div>
+          </div>
+
+          <div class="section-card">
+            <h3>3. Challan Photo / चालान फोटो</h3>
+            <label><b>Upload Challan Photo</b> / चालान फोटो अपलोड करें</label>
+            <div class="file-btn"><input type="file" accept="image/*" capture="environment" id="challanPhoto"><img id="thumbChallan" class="thumb" style="display:none"></div>
+          </div>
+
+          <div class="loc-box" id="locBox">📍 Capturing location... / लोकेशन ली जा रही है...</div>
+
+          <button class="submit-btn" id="submitBtn">Submit Entry / एंट्री जमा करें</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<footer>Prototype demo — data stored in this app's shared storage. / यह एक डेमो प्रोटोटाइप है।</footer>
+
+<div id="imgModal" style="display:none"></div>
+
+<script>
+// ===================================================================
+// STEP: तुमचा Google Apps Script "Web app URL" इथे टाका (Code.gs deploy केल्यावर मिळतो)
+// PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW:
+// ===================================================================
+const SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+const machSelect = document.getElementById('machNo');
+for(let i=1;i<=37;i++){
+  const o1=document.createElement('option'); o1.value=i; o1.textContent='Machine '+i+' / मशीन '+i; machSelect.appendChild(o1);
+}
+
+let capturedLoc = null;
+const locBox = document.getElementById('locBox');
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    capturedLoc = {lat:pos.coords.latitude, lng:pos.coords.longitude};
+    locBox.textContent = '📍 Location captured / लोकेशन प्राप्त हुई: ' + capturedLoc.lat.toFixed(5)+', '+capturedLoc.lng.toFixed(5);
+  }, err=>{
+    locBox.textContent = '⚠ Location not available (allow permission) / लोकेशन उपलब्ध नहीं (अनुमति दें)';
+  });
+} else {
+  locBox.textContent = '⚠ Geolocation not supported / लोकेशन सपोर्ट नहीं है';
+}
+
+function fileToCompressedBase64(file, maxW=700){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e =>{
+      const img = new Image();
+      img.onload = ()=>{
+        const scale = Math.min(1, maxW/img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width*scale; canvas.height = img.height*scale;
+        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.6));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function wireThumb(inputId, thumbId){
+  document.getElementById(inputId).addEventListener('change', async e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const data = await fileToCompressedBase64(f, 200);
+    const t = document.getElementById(thumbId);
+    t.src = data; t.style.display='inline-block';
+  });
+}
+wireThumb('readMorning','thumbMorning');
+wireThumb('readEvening','thumbEvening');
+wireThumb('challanPhoto','thumbChallan');
+
+document.getElementById('submitBtn').onclick = async ()=>{
+  const msgBox = document.getElementById('formMsg');
+  const opName = document.getElementById('opName').value.trim();
+  const machNo = machSelect.value;
+  const startTime = document.getElementById('startTime').value;
+  const endTime = document.getElementById('endTime').value;
+  const remark = document.getElementById('remark').value.trim();
+
+  if(!opName || !machNo || !startTime){
+    msgBox.innerHTML = '<div class="msg err">Please fill Operator Name, Machine No. and Start Time. / कृपया ऑपरेटर नाम, मशीन नंबर और शुरू समय भरें।</div>';
+    return;
+  }
+
+  try{
+    const morningFile = document.getElementById('readMorning').files[0];
+    const eveningFile = document.getElementById('readEvening').files[0];
+    const challanFile = document.getElementById('challanPhoto').files[0];
+
+    const entry = {
+      opName, machNo, startTime, endTime, remark,
+      readingMorning: morningFile ? await fileToCompressedBase64(morningFile) : null,
+      readingEvening: eveningFile ? await fileToCompressedBase64(eveningFile) : null,
+      challanPhoto: challanFile ? await fileToCompressedBase64(challanFile) : null,
+      location: capturedLoc,
+      timestamp: Date.now(),
+      dateStr: new Date().toLocaleString()
+    };
+
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(entry)
+    });
+    if(!res.ok) throw new Error('save failed');
+
+    msgBox.innerHTML = '<div class="msg ok">Entry submitted successfully! System updated. / एंट्री सफलतापूर्वक जमा हुई! सिस्टम अपडेट हो गया।</div>';
+    document.getElementById('opName').value='';
+    document.getElementById('startTime').value='';
+    document.getElementById('endTime').value='';
+    document.getElementById('remark').value='';
+    ['readMorning','readEvening','challanPhoto'].forEach(id=>document.getElementById(id).value='');
+    ['thumbMorning','thumbEvening','thumbChallan'].forEach(id=>{document.getElementById(id).style.display='none';});
+  }catch(err){
+    msgBox.innerHTML = '<div class="msg err">Could not save entry. Try again. / एंट्री सेव नहीं हुई, फिर कोशिश करें।</div>';
+    console.error(err);
+  }
+};
+
+</script>
+</body>
+</html>
